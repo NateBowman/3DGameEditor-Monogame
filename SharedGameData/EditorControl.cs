@@ -13,6 +13,7 @@ using SharedGameData.ExtensionMethods;
 using SharedGameData;
 using XNAGizmo;
 using SharedGameData;
+using SharedGameData.Grid;
 
 namespace WinFormsGraphicsDevice
 {
@@ -39,6 +40,7 @@ namespace WinFormsGraphicsDevice
         GameTime gameTime;  //create fromthe above 3 values
 
         Camera cam;
+        Grid3D Grid;
         
         protected override void Initialize()
         {
@@ -58,12 +60,16 @@ namespace WinFormsGraphicsDevice
 
             cam = new Camera(new Vector3(0,20,0));
             cam.LoadContent(content, GraphicsDevice);
+            Grid = new Grid3D(Vector3.Zero, 200, 200, 50, 50, Color.Red, GraphicsDevice);
         }
 
         public void Update()
         {
             UpdateTime();
-            
+            cam.Update(gameTime);
+            Engine.CameraPosition = cam.CameraPos;
+            Engine.View = Camera.viewMatrix;
+            Engine.Projection = Camera.projMatrix;            
         }
 
         private void UpdateTime()
@@ -87,6 +93,8 @@ namespace WinFormsGraphicsDevice
                 return;
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            Grid.Draw();
+            Engine.Draw();
              
         }
 

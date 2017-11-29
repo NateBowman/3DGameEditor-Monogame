@@ -65,6 +65,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GraphicsDeviceService.cs" />
+    <Compile Include="Grid\Grid3D.cs" />
+    <Compile Include="HelperFunctions\RayHelpers.cs" />
     <Compile Include="Input\MGForms_MouseInput.cs" />
     <Compile Include="Input\NativeKeyboardInput.cs" />
     <Compile Include="Level_Classes\Level.cs" />
