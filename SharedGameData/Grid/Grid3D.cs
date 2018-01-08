@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace SharedGameData.Grid
 {
-    class Grid3D
+    /// This was not public in the supplied files, but required in presentation
+    public class Grid3D
     {
         public Vector3 Position;
         public int Width;

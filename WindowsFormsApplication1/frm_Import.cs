@@ -14,14 +14,63 @@ namespace WindowsFormsApplication1
 {
     public partial class frm_Import : Form
     {
+
+        public enum ImportType {
+            Model,
+            HeightMap,
+            File
+        }
+
+        public ImportType ContentType { get; set; } = ImportType.Model;
+
+        protected string Folder => $"{Enum.GetName(typeof(ImportType), ContentType)}s";
+
+        protected string Filter {
+            get {
+                switch (ContentType) {
+                    case ImportType.Model: {
+                        return "FBX and PNG files|*.png;*.fbx";
+                    }
+                    case ImportType.HeightMap: {
+                        return "tif files (Alpha height)|*.tif";
+                    }
+                    default:
+                        return "Not implemented";
+                }
+            }
+        }
+
+        protected string Title
+        {
+            get
+            {
+                switch (ContentType)
+                {
+                    case ImportType.Model:
+                    {
+                        return "Please select a .FBX file and its texture map";
+                    }
+                    case ImportType.HeightMap:
+                    {
+                        return "Please select a HeightMap map";
+                    }
+                    default:
+                        return "Not implemented";
+                }
+            }
+        }
+
+
         public frm_Import()
         {
             InitializeComponent();
         }
 
-        private void button_Import_Click(object sender, EventArgs e)
-        {
-            openFileDialog1.Title = "Please select a .FBX file and its texture map";
+        private void button_Import_Click(object sender, EventArgs e) {
+
+            // Add selection filter
+            openFileDialog1.Filter = Filter;
+            openFileDialog1.Title = Title;
 
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -76,7 +125,7 @@ namespace WindowsFormsApplication1
 
                 //now we copy across the files to the target directory
                 string[] fileList = Directory.GetFiles(Path.Combine(Application.StartupPath, @"SourceAssets\bin"));
-                string targetDirectory = Path.Combine(Application.StartupPath, @"Content\Models");
+                string targetDirectory = Path.Combine(Application.StartupPath, $@"Content\{Folder}");
                 for (int i = 0; i < fileList.Length; i++)
                 {
                     string targetPlusFilename = Path.Combine(targetDirectory, Path.GetFileName(fileList[i]));
@@ -127,6 +176,20 @@ namespace WindowsFormsApplication1
 /processorParam:TextureFormat=Color
 /build:" + fileName;
                     }
+                    break;
+                case ".tif":
+                {
+                    output += Environment.NewLine +
+@"/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:" + fileName;
+                }
                     break;
                 default:
                     {

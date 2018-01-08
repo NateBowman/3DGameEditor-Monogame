@@ -1,29 +1,39 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SharedGameData.HelperFunctions {
+    #region Usings
 
-namespace SharedGameData.HelperFunctions
-{
-    public static class RayHelpers
-    {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
-        public static Ray ConvertMouseToRay(Vector2 mousePosition, GraphicsDevice _graphics, Matrix view, Matrix projection)
-        {
-            var near = new Vector3(mousePosition, 0);
-            var far = new Vector3(mousePosition, 1);
+    #endregion
 
-            near = _graphics.Viewport.Unproject(near, projection, view, Matrix.Identity);
-            far = _graphics.Viewport.Unproject(far, projection, view, Matrix.Identity);
+    public static class RayHelpers {
+        public static Ray ConvertMouseToRay(Vector2 mousePosition, GraphicsDevice _graphics, Matrix view, Matrix projection) {
+            var nearPoint = new Vector3(mousePosition, 0);
+            var farPoint = new Vector3(mousePosition, 1);
 
-            var direction = far - near;
+            nearPoint = _graphics.Viewport.Unproject(nearPoint, projection, view, Matrix.Identity);
+            farPoint = _graphics.Viewport.Unproject(farPoint, projection, view, Matrix.Identity);
+
+            var direction = farPoint - nearPoint;
             direction.Normalize();
 
-            return new Ray(near, direction);
+            return new Ray(nearPoint, direction);
         }
 
+        public static float? GetHit(Ray ray, BoundingBox bb) {
+            var distance = ray.Intersects(bb);
+
+            return distance;
+        }
+
+        public static Vector3? GetHitPoint(Ray ray, BoundingBox bb) {
+            var distance = ray.Intersects(bb);
+            if (distance != null) {
+                var Pos = (Vector3) (ray.Position + (ray.Direction * distance));
+                return Pos;
+            }
+
+            return null;
+        }
     }
 }
