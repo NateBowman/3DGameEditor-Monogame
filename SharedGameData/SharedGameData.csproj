@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -65,10 +66,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GraphicsDeviceService.cs" />
+    <Compile Include="Grid\Grid3D.cs" />
+    <Compile Include="HelperFunctions\BoundingBoxRenderer.cs" />
+    <Compile Include="HelperFunctions\RayHelpers.cs" />
+    <Compile Include="HelperFunctions\VertexElementExtractor.cs" />
     <Compile Include="Input\MGForms_MouseInput.cs" />
     <Compile Include="Input\NativeKeyboardInput.cs" />
     <Compile Include="Level_Classes\Level.cs" />
+    <Compile Include="3D_Gizmo\TerrainEntity.cs" />
     <Compile Include="PrimitiveBatch.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="STATIC_GLOBAL_INPUT.cs" />

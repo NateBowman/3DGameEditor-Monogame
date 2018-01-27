@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApplication1", "WindowsFormsApplication1\WindowsFormsApplication1.csproj", "{A318EFAE-0B0D-48C3-B4ED-10D133403C72}"
 EndProject
@@ -24,6 +24,7 @@ Global
 		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Debug|x86.Build.0 = Debug|Any CPU
 		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A318EFAE-0B0D-48C3-B4ED-10D133403C72}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -34,6 +35,7 @@ Global
 		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Debug|x86.Build.0 = Debug|Any CPU
 		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E6FA93A-E75D-461F-8CB3-4A0959A424FC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -52,5 +54,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4FDCAE3B-AA55-4767-9B09-44FD6A5BE17C}
 	EndGlobalSection
 EndGlobal

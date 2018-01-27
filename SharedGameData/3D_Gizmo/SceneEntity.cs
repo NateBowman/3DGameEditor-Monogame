@@ -20,61 +20,84 @@
 //#define USE_ROTATIONMATRIX
 
 #region Using Statements
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+
 //using SharedGameData.HelperFunctions;
-using XNAGizmo;
-using System.ComponentModel;
+
 #endregion
 
-namespace SharedGameData
-{
-    public enum ShaderType
-    {
+namespace SharedGameData {
+    #region Usings
+
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.IO;
+    using System.Runtime.CompilerServices;
+    using System.Xml.Serialization;
+    using Annotations;
+    using HelperFunctions;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
+    using XNAGizmo;
+
+    #endregion
+
+    public enum ShaderType {
         BasicEffect,
         Ambient,
         Diffuse,
         Specular,
-        Textured        
+        Textured,
+        Terrain
     }
 
     [Serializable]
-    public class SceneEntity : ITransformable
-    {
-
+    public class SceneEntity : ITransformable, INotifyPropertyChanged {
         #region Fields & Properties
-        private Texture2D texture;
 
-        private Vector3 _position = Vector3.Zero;
+        protected Texture2D texture;
+
+        protected Vector3 _position = Vector3.Zero;
 
         [NonSerialized]
         private List<float[]> verts;
-        private void RebuildBB()
-        {
 
+        protected virtual void RebuildBB() {
+            if (EntityModel == null) {
+                return;
+            }
+
+            if (verts == null) {
+                verts = VertexElementExtractor.GetVertexData(EntityModel);
+            }
+
+            _world = Matrix.CreateScale(_scale) * Matrix.CreateWorld(_position, _forward, _up);
+            bounds = VertexElementExtractor.UpdateBoundingBoxFromVertexList(EntityModel, _world, verts);
         }
 
-        public string Name
-        {
-            get;
-            set;
+        [ReadOnly(true)]
+        public string ModelName { get; set; }
+
+
+        public Vector3 Position {
+            get => _position;
+            set {
+                _position = value;
+                OnPropertyChanged();
+                RebuildBB();
+            }
         }
 
-        public Vector3 Position
-        {
-            get { return _position; }
-            set { _position = value; RebuildBB(); }
-        }
+        protected Vector3 _scale = Vector3.One;
 
-        private Vector3 _scale = Vector3.One;
-        public Vector3 Scale
-        {
-            get { return _scale; }
-            set { _scale = value; RebuildBB(); }
+        public Vector3 Scale {
+            get => _scale;
+            set {
+                _scale = value;
+                OnPropertyChanged();
+                RebuildBB();
+            }
         }
 
 #if USE_QUATERNION
@@ -96,205 +119,181 @@ namespace SharedGameData
             set { rotation = value; }
         }
 #endif
-        private Vector3 _forward = Vector3.Forward;
-        private Vector3 _up = Vector3.Up;
 
-        public Vector3 Forward
-        {
-            get { return _forward; }
-            set
-            {
+        protected Vector3 _forward = Vector3.Forward;
+        protected Vector3 _up = Vector3.Up;
+
+        [ReadOnly(true)]
+        public Vector3 Forward {
+            get => _forward;
+            set {
                 _forward = value;
                 _forward.Normalize();
             }
         }
 
-        public Vector3 Up
-        {
-            get { return _up; }
-            set
-            {
+        [ReadOnly(true)]
+        public Vector3 Up {
+            get => _up;
+            set {
                 _up = value;
                 _up.Normalize();
             }
         }
 
         private Model _model;
-        private Matrix _world;
+        protected Matrix _world;
 
-        const float LENGTH = 5f;
-        private BoundingBox bounds;
-        public BoundingBox BoundingBox
-        {
-            get
-            {
-                return bounds;
-            }
-        }
+        private const float LENGTH = 5f;
+        protected BoundingBox bounds;
+
+        [ReadOnly(true)]
+        public BoundingBox BoundingBox => bounds;
 
         private ShaderType shader = ShaderType.BasicEffect;
-        [CategoryAttribute("Shaders"), DescriptionAttribute("Selected Shader")]
-        public ShaderType Shader
-        {
-            get
-            {
-                return shader;
-            }
-            set
-            {
+
+        [Category("Shaders"), Description("Selected Shader")]
+        public virtual ShaderType Shader {
+            get => shader;
+            set {
+                if (value == ShaderType.Terrain) {
+                    return;
+                }
+
                 shader = value;
-                LoadAsset(SceneEntity.Content);
+                LoadAsset(Content);
             }
         }
 
-        private bool _generatedTags = false;
+        private bool _generatedTags;
 
         #region Shader Related Variables
+
         //custom shader
-        private Effect effect;
+        protected Effect effect;
 
         //holds the string names of all parameters (variables) in a shader
         public List<string> EffectParameterNames;
 
         private Vector4 ambientColor = new Color(1, 1, 1, 1).ToVector4();
-        [CategoryAttribute("Shaders"), DescriptionAttribute("Ambient colour")]
-        public Vector4 AmbientColor
-        {
-            get
-            {
-                return ambientColor;
-            }
-            set
-            {
-                ambientColor = value;
-            }
-        }
+
+        [Category("Shaders"), Description("Ambient colour")]
+        public Vector4 AmbientColor { get => ambientColor; set => ambientColor = value; }
 
         private float ambientIntensity = 0.1f;
-        [CategoryAttribute("Shaders"), DescriptionAttribute("Ambient intensity")]
-        public float AmbientIntensity
-        {
-            get
-            {
-                return ambientIntensity;
-            }
-            set
-            {
-                ambientIntensity = value;
-            }
-        }
+
+        [Category("Shaders"), Description("Ambient intensity")]
+        public float AmbientIntensity { get => ambientIntensity; set => ambientIntensity = value; }
 
         private Vector3 diffuseLightDirection = new Vector3(1, 0, 0);
-        [CategoryAttribute("Shaders"), DescriptionAttribute("Diffuse light dir")]
-        public Vector3 DiffuseLightDirection
-        {
-            get
-            {
-                return diffuseLightDirection;
-            }
-            set
-            {
-                diffuseLightDirection = value;
-            }
-        }
+
+        [Category("Shaders"), Description("Diffuse light dir")]
+        public Vector3 DiffuseLightDirection { get => diffuseLightDirection; set => diffuseLightDirection = value; }
 
         private Vector4 diffuseColor = new Vector4(1, 1, 1, 1);
-        [CategoryAttribute("Shaders"), DescriptionAttribute("Diffuse Light colour")]
-        public Vector4 DiffuseColor
-        {
-            get
-            {
-                return diffuseColor;
-            }
-            set
-            {
-                diffuseColor = value;
-            }
-        }
+
+        [Category("Shaders"), Description("Diffuse Light colour")]
+        public Vector4 DiffuseColor { get => diffuseColor; set => diffuseColor = value; }
 
         private float diffuseIntensity = 1.0f;
-        [CategoryAttribute("Shaders"), DescriptionAttribute("Diffuse intensity")]
-        public float DiffuseIntensity
-        {
-            get
-            {
-                return diffuseIntensity;
-            }
-            set
-            {
-                diffuseIntensity = value;
-            }
-        }
+        private string _name;
+
+        [Category("Shaders"), Description("Diffuse intensity")]
+        public float DiffuseIntensity { get => diffuseIntensity; set => diffuseIntensity = value; }
+
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string ParentId { get; set; } = null;
+
+        [XmlIgnore]
+        public Model EntityModel { get => _model; set => _model = value; }
+
         #endregion
 
         public static ContentManager Content;
 
         #endregion
 
-        public SceneEntity()
-        { }
+        public SceneEntity() { }
 
-        public SceneEntity(Model model, string modelName)
-        {
-            _model = model;
-            Name = modelName;
+        public SceneEntity(Model model, string modelName) {
+            EntityModel = model;
+            ModelName = modelName;
+            if (Name == "") {
+                Name = $"{modelName}:{new Random().Next(1000, 9999)}";
+            }
+            // scale the object to something resonable
+            model.Root.Transform = Matrix.Identity * Matrix.CreateScale(0.1f);
         }
 
-        public void LoadAsset(ContentManager cm)
-        {
-            if (Content == null)
-                Content = cm;
+        public string Name {
+            get { return _name; }
+            set {
+                if (value == _name)
+                    return;
 
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected void SetUpContentMan(ContentManager cm) {
+            if (Content == null)
+            {
+                Content = cm;
+            }
+        }
+
+        protected void SetUpTagsAndTexture() {
             if (!_generatedTags)
             {
-                _model = cm.Load<Model>(Path.Combine("Models", Name));
+                EntityModel = Content.Load<Model>(Path.Combine("Models", ModelName));
                 generateTags();
                 _generatedTags = true;
             }
             //find textureName from meshtag, this is automatically populated with information from the model itself with the generateTags method
-            texture = ((MeshTag)(_model.Meshes[0].MeshParts[0].Tag)).Texture;
+            texture = ((MeshTag)(EntityModel.Meshes[0].MeshParts[0].Tag)).Texture;
+        }
 
+        protected void SetUpEffects() {
             EffectParameterNames = new List<string>();
-            string effectName = Shader.ToString();
+            var effectName = Shader.ToString();
 
-            if (shader != ShaderType.BasicEffect)
+            if (Shader != ShaderType.BasicEffect)
             {
-                effect = cm.Load<Effect>(Path.Combine("Shaders", effectName));
+                effect = Content.Load<Effect>(Path.Combine("Shaders", effectName));
 
                 //extract a list of all the parameters in the shader, we can then use this list to test if the parameter exists before sending it to the shader
-                EffectParameterCollection eParamColl = effect.Parameters;
+                var eParamColl = effect.Parameters;
 
-                for (int i = 0; i < eParamColl.Count; i++)
-                {
-                    EffectParameterNames.Add(eParamColl[i].Name);
+                foreach (var t in eParamColl) {
+                    EffectParameterNames.Add(t.Name);
                 }
             }
+        }
+
+        public virtual void LoadAsset(ContentManager cm) {
+            SetUpContentMan(cm);
+
+            SetUpTagsAndTexture();
+
+            SetUpEffects();
 
             RebuildBB();
         }
 
-        private void generateTags()
-        {
-            foreach (ModelMesh mesh in _model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    if (part.Effect is BasicEffect)
-                    {
-                        BasicEffect effect = (BasicEffect)part.Effect;
-                        MeshTag tag = new MeshTag(
-                            effect.DiffuseColor,
-                            effect.Texture,
-                            effect.SpecularPower,
-                            (BasicEffect)part.Effect);
+        private void generateTags() {
+            foreach (var mesh in EntityModel.Meshes) {
+                foreach (var part in mesh.MeshParts) {
+                    if (part.Effect is BasicEffect) {
+                        var effect = (BasicEffect) part.Effect;
+                        var tag = new MeshTag(effect.DiffuseColor, effect.Texture, effect.SpecularPower, (BasicEffect) part.Effect);
                         part.Tag = tag;
                     }
                 }
             }
         }
 
-        public void Update()
-        {
+        public virtual void Update() {
 #if USE_QUATERNION
 
       world = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(orientation) * Matrix.CreateTranslation(position);
@@ -305,81 +304,89 @@ namespace SharedGameData
 #endif
         }
 
-        public float? Select(Ray selectionRay)
-        {
+        public float? Select(Ray selectionRay) {
             return selectionRay.Intersects(BoundingBox);
         }
 
-        public void Draw(GraphicsDevice gd = null)
-        {
-            Matrix[] modelTransforms = new Matrix[_model.Bones.Count];
-            _model.CopyAbsoluteBoneTransformsTo(modelTransforms);
+        public virtual void Draw(GraphicsDevice gd = null) {
+            var modelTransforms = new Matrix[EntityModel.Bones.Count];
+            EntityModel.CopyAbsoluteBoneTransformsTo(modelTransforms);
 
-            if (Shader == ShaderType.BasicEffect)
-            {
-                foreach (ModelMesh modelmesh in _model.Meshes)
-                {
-                    foreach (ModelMeshPart meshpart in modelmesh.MeshParts)
-                    {
-                        if (meshpart.Effect.GetType() != typeof(BasicEffect))
-                        {
-                            meshpart.Effect = ((MeshTag)meshpart.Tag).cachedBasicEffect;
+            if (Shader == ShaderType.BasicEffect) {
+                foreach (var modelmesh in EntityModel.Meshes) {
+                    foreach (var meshpart in modelmesh.MeshParts) {
+                        if (meshpart.Effect.GetType() != typeof(BasicEffect)) {
+                            meshpart.Effect = ((MeshTag) meshpart.Tag).cachedBasicEffect;
                         }
-                        BasicEffect effect = (BasicEffect)meshpart.Effect;
+                        var effect = (BasicEffect) meshpart.Effect;
 
                         effect.World = modelTransforms[modelmesh.ParentBone.Index] * _world;
                         effect.View = Engine.View;
                         effect.Projection = Engine.Projection;
                         effect.EnableDefaultLighting();
                     }
+
                     modelmesh.Draw();
                 }
             }
-            else
-            {
-                foreach (ModelMesh mesh in _model.Meshes)
-                {
-                    foreach (ModelMeshPart part in mesh.MeshParts)
-                    {
+            else {
+                foreach (var mesh in EntityModel.Meshes) {
+                    foreach (var part in mesh.MeshParts) {
                         part.Effect = effect;
                         effect.Parameters["World"].SetValue(modelTransforms[mesh.ParentBone.Index] * _world);
                         effect.Parameters["View"].SetValue(Camera.viewMatrix);
                         effect.Parameters["Projection"].SetValue(Camera.projMatrix);
 
-                        Matrix worldInverseTransposeMatrix = Matrix.Transpose(Matrix.Invert(modelTransforms[mesh.ParentBone.Index] * _world));
+                        var worldInverseTransposeMatrix = Matrix.Transpose(Matrix.Invert(modelTransforms[mesh.ParentBone.Index] * _world));
 
-                        if (EffectParameterNames.Contains("WorldInverseTranspose"))
+                        if (EffectParameterNames.Contains("WorldInverseTranspose")) {
                             effect.Parameters["WorldInverseTranspose"].SetValue(worldInverseTransposeMatrix);
-                        if (EffectParameterNames.Contains("ViewVector"))
+                        }
+                        if (EffectParameterNames.Contains("ViewVector")) {
                             effect.Parameters["ViewVector"].SetValue(Camera.GetViewVector());
-                        if (EffectParameterNames.Contains("ModelTexture"))
+                        }
+                        if (EffectParameterNames.Contains("ModelTexture")) {
                             effect.Parameters["ModelTexture"].SetValue(texture);
+                        }
 
                         //Additional parameters example:
 
-                        if (EffectParameterNames.Contains("AmbientColor"))
+                        if (EffectParameterNames.Contains("AmbientColor")) {
                             effect.Parameters["AmbientColor"].SetValue(AmbientColor);
-                        if (EffectParameterNames.Contains("AmbientIntensity"))
+                        }
+                        if (EffectParameterNames.Contains("AmbientIntensity")) {
                             effect.Parameters["AmbientIntensity"].SetValue(AmbientIntensity);
-                        if (EffectParameterNames.Contains("DiffuseLightDirection"))
+                        }
+                        if (EffectParameterNames.Contains("DiffuseLightDirection")) {
                             effect.Parameters["DiffuseLightDirection"].SetValue(-DiffuseLightDirection);
-                        if (EffectParameterNames.Contains("DiffuseColor"))
+                        }
+                        if (EffectParameterNames.Contains("DiffuseColor")) {
                             effect.Parameters["DiffuseColor"].SetValue(DiffuseColor);
-                        if (EffectParameterNames.Contains("DiffuseIntensity"))
+                        }
+                        if (EffectParameterNames.Contains("DiffuseIntensity")) {
                             effect.Parameters["DiffuseIntensity"].SetValue(DiffuseIntensity);
-
-
+                        }
                     }
 
                     mesh.Draw();
                 }
-
-
             }
 
-            //     if (gd != null)
-            //       BoundingBoxRenderer.Render(BoundingBox, gd, Camera.viewMatrix, Camera.projMatrix, Color.HotPink);
+            RenderBB(gd);
+        }
+
+        protected void RenderBB(GraphicsDevice gd) {
+            if (gd != null)
+            {
+                BoundingBoxRenderer.Render(BoundingBox, gd, Camera.viewMatrix, Camera.projMatrix, Color.HotPink);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

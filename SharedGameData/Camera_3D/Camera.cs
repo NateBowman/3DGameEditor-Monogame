@@ -16,7 +16,7 @@ namespace SharedGameData
         static float updownRot = 0;     //amount of up/down rotation applied to the camera 
 
         //These 2 values will limit how fast we want our camera to respond on mouse and keyboard input, and should therefore remain constant
-        const float const_rotationSpeed = 1.5f;
+        const float const_rotationSpeed = 1f;
         const float const_moveSpeed = 500.0f;
 
         MouseState originalMouseState;
@@ -121,11 +121,19 @@ namespace SharedGameData
                 if (STATIC_GLOBAL_INPUT.currMouse != STATIC_GLOBAL_INPUT.prevMouse)
                 {
                     //get the difference in position between the current and original mouse position
-                    float xDifference = (STATIC_GLOBAL_INPUT.currMouse.X - STATIC_GLOBAL_INPUT.prevMouse.X) * const_rotationSpeed;
-                    float yDifference = (STATIC_GLOBAL_INPUT.currMouse.Y - STATIC_GLOBAL_INPUT.prevMouse.Y) * const_rotationSpeed;
+                    // NOTE: const_rotationSpeed is also factored in below
+                    float xDifference = (STATIC_GLOBAL_INPUT.currMouse.X - STATIC_GLOBAL_INPUT.prevMouse.X);/* * const_rotationSpeed*/;
+                    float yDifference = (STATIC_GLOBAL_INPUT.currMouse.Y - STATIC_GLOBAL_INPUT.prevMouse.Y); /** const_rotationSpeed*/;
 
-                    leftrightRot -= const_rotationSpeed * xDifference * amount; //adjust the left/right rotation by the difference value * speed * time passed
-                    updownRot -= const_rotationSpeed * yDifference * amount;    // " for up / down rotation 
+                    // NOTE: Left/right rotation controls are not normally inverted
+                    if(Math.Abs(xDifference) > 1) {
+                        leftrightRot += const_rotationSpeed * xDifference * amount; //adjust the left/right rotation by the difference value * speed * time passed
+                        Console.WriteLine($"{leftrightRot} / {xDifference}");
+                    }
+
+                    if(Math.Abs(yDifference) > 1 ) {
+                        updownRot -= const_rotationSpeed * yDifference * amount;    // " for up / down rotation 
+                    }
 
                     UpdateViewMatrix(); //update the camera's view matrix
                 }

@@ -8,12 +8,41 @@ using SharedGameData.Level_Classes;
 
 namespace SharedGameData.Editor
 {
+    using Microsoft.Xna.Framework.Graphics;
+
     public delegate void ObjectSelectionChange(object obj);
     public delegate void LoadedLevelChange(object obj);
 
     public static class STATIC_EDITOR_MODE
     {      
         public static ContentManager contentMan;
+
+
+        /// <summary>
+        /// Executes an action on child entities
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="action"></param>
+        public static void ExecuteOnChildEntities(SceneEntity entity, Action<SceneEntity> action)
+        {
+            foreach (SceneEntity ent in LevelInstance.Entities.Where(sceneEntity => entity.Id == sceneEntity.ParentId))
+            {
+                ExecuteOnSelfAndChildEntities(ent, action);
+            }
+        }
+
+        /// <summary>
+        /// Executes an action on itself and all child entities
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="action"></param>
+        public static void ExecuteOnSelfAndChildEntities(SceneEntity entity, Action<SceneEntity> action) {
+            foreach (SceneEntity ent in LevelInstance.Entities.Where(sceneEntity => entity.Id == sceneEntity.ParentId)) {
+                ExecuteOnSelfAndChildEntities(ent,action);
+            }
+            
+            action(entity);
+        }
 
         private static Level _levelInstance;
         public static Level LevelInstance
@@ -47,5 +76,32 @@ namespace SharedGameData.Editor
         }
         public static event ObjectSelectionChange SelectionChanged;
         public static event LoadedLevelChange LevelChanged;
+
+
+        public static void RemoveEntity(SceneEntity entity)
+        {
+            LevelInstance.Entities.Remove(entity);
+            SelectedObjects = new List<SceneEntity>();
+            ResyncEngine();
+        }
+
+        private static void ResyncEngine() {
+            Engine.Entities.Clear();
+            Engine.Entities.AddRange(LevelInstance.Entities);
+        }
+
+        public static void RemoveAssetsWithHeight(string heightName)
+        {
+            LevelInstance.Entities.RemoveAll(actor => actor is TerrainEntity terrain && terrain.ModelName == heightName);
+            SelectedObjects = new List<SceneEntity>();
+            ResyncEngine();
+        }
+
+        public static void RemoveAssetsWithModel(string modelName)
+        {
+            LevelInstance.Entities.RemoveAll(actor => actor.ModelName == modelName);
+            SelectedObjects = new List<SceneEntity>();
+            ResyncEngine();
+        }
     }
 }

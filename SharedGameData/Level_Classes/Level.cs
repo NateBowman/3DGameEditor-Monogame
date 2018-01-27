@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SharedGameData;
+﻿namespace SharedGameData.Level_Classes {
+    #region Usings
 
-namespace SharedGameData.Level_Classes
-{
-    public class Level
-    {
-        public List<SceneEntity> Entities {get;set;}  //short form of a getter/setter
+    using System.Collections.Generic;
 
-        public Level()
-        {
+    #endregion
+
+    public class Level {
+        public Level() {
             Entities = new List<SceneEntity>();
         }
+
+        public List<SceneEntity> Entities { get; set; } //short form of a getter/setter
 
     }
 }
