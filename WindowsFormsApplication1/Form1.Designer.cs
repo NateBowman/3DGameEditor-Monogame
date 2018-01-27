@@ -97,7 +97,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1082, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1424, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -155,7 +155,7 @@
             this.toolStripButtonShowGrid});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1082, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(1424, 27);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -243,7 +243,7 @@
             this.propertyGrid1.Location = new System.Drawing.Point(2, 2);
             this.propertyGrid1.Margin = new System.Windows.Forms.Padding(2);
             this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(196, 444);
+            this.propertyGrid1.Size = new System.Drawing.Size(246, 452);
             this.propertyGrid1.TabIndex = 7;
             // 
             // listBox_Models
@@ -254,7 +254,7 @@
             this.listBox_Models.Location = new System.Drawing.Point(3, 3);
             this.listBox_Models.Margin = new System.Windows.Forms.Padding(2);
             this.listBox_Models.Name = "listBox_Models";
-            this.listBox_Models.Size = new System.Drawing.Size(182, 149);
+            this.listBox_Models.Size = new System.Drawing.Size(232, 218);
             this.listBox_Models.TabIndex = 8;
             // 
             // assetPanel
@@ -263,7 +263,7 @@
             this.assetPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.assetPanel.Location = new System.Drawing.Point(2, 2);
             this.assetPanel.Name = "assetPanel";
-            this.assetPanel.Size = new System.Drawing.Size(196, 181);
+            this.assetPanel.Size = new System.Drawing.Size(246, 250);
             this.assetPanel.TabIndex = 11;
             // 
             // tabControl1
@@ -274,7 +274,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(196, 181);
+            this.tabControl1.Size = new System.Drawing.Size(246, 250);
             this.tabControl1.TabIndex = 10;
             // 
             // tabPage1
@@ -284,7 +284,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(188, 155);
+            this.tabPage1.Size = new System.Drawing.Size(238, 224);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Mesh";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -313,8 +313,11 @@
             // 
             // rightContainer
             // 
+            this.rightContainer.BackColor = System.Drawing.SystemColors.Control;
+            this.rightContainer.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.arrows;
             this.rightContainer.Dock = System.Windows.Forms.DockStyle.Right;
-            this.rightContainer.Location = new System.Drawing.Point(882, 51);
+            this.rightContainer.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.rightContainer.Location = new System.Drawing.Point(1174, 51);
             this.rightContainer.Name = "rightContainer";
             this.rightContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -327,12 +330,14 @@
             // 
             this.rightContainer.Panel2.Controls.Add(this.assetPanel);
             this.rightContainer.Panel2.Padding = new System.Windows.Forms.Padding(2);
-            this.rightContainer.Size = new System.Drawing.Size(200, 637);
-            this.rightContainer.SplitterDistance = 448;
+            this.rightContainer.Size = new System.Drawing.Size(250, 720);
+            this.rightContainer.SplitterDistance = 456;
+            this.rightContainer.SplitterWidth = 10;
             this.rightContainer.TabIndex = 11;
             // 
             // leftContainer
             // 
+            this.leftContainer.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.arrows;
             this.leftContainer.Dock = System.Windows.Forms.DockStyle.Left;
             this.leftContainer.Location = new System.Drawing.Point(0, 51);
             this.leftContainer.Name = "leftContainer";
@@ -348,8 +353,9 @@
             this.leftContainer.Panel2.Controls.Add(this.meshTreeView);
             this.leftContainer.Panel2.Controls.Add(this.propertyGrid2);
             this.leftContainer.Panel2.Padding = new System.Windows.Forms.Padding(2);
-            this.leftContainer.Size = new System.Drawing.Size(200, 637);
-            this.leftContainer.SplitterDistance = 318;
+            this.leftContainer.Size = new System.Drawing.Size(250, 720);
+            this.leftContainer.SplitterDistance = 416;
+            this.leftContainer.SplitterWidth = 10;
             this.leftContainer.TabIndex = 12;
             // 
             // hierarchyTreeView
@@ -361,7 +367,7 @@
             this.hierarchyTreeView.HideSelection = false;
             this.hierarchyTreeView.Location = new System.Drawing.Point(2, 2);
             this.hierarchyTreeView.Name = "hierarchyTreeView";
-            this.hierarchyTreeView.Size = new System.Drawing.Size(196, 314);
+            this.hierarchyTreeView.Size = new System.Drawing.Size(246, 412);
             this.hierarchyTreeView.TabIndex = 0;
             this.hierarchyTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView_ItemDrag);
             this.hierarchyTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
@@ -373,7 +379,7 @@
             this.meshTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.meshTreeView.Location = new System.Drawing.Point(2, 2);
             this.meshTreeView.Name = "meshTreeView";
-            this.meshTreeView.Size = new System.Drawing.Size(196, 181);
+            this.meshTreeView.Size = new System.Drawing.Size(246, 160);
             this.meshTreeView.TabIndex = 0;
             this.meshTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.meshTreeView_NodeMouseClick);
             // 
@@ -381,9 +387,9 @@
             // 
             this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.propertyGrid2.HelpVisible = false;
-            this.propertyGrid2.Location = new System.Drawing.Point(2, 183);
+            this.propertyGrid2.Location = new System.Drawing.Point(2, 162);
             this.propertyGrid2.Name = "propertyGrid2";
-            this.propertyGrid2.Size = new System.Drawing.Size(196, 130);
+            this.propertyGrid2.Size = new System.Drawing.Size(246, 130);
             this.propertyGrid2.TabIndex = 1;
             this.propertyGrid2.ToolbarVisible = false;
             // 
@@ -391,10 +397,10 @@
             // 
             this.panel1.Controls.Add(this.editorControl1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(200, 51);
+            this.panel1.Location = new System.Drawing.Point(250, 51);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(2);
-            this.panel1.Size = new System.Drawing.Size(682, 637);
+            this.panel1.Size = new System.Drawing.Size(924, 720);
             this.panel1.TabIndex = 13;
             // 
             // btnImportHeight
@@ -440,9 +446,9 @@
             this.panel3.Controls.Add(this.btnImportModel);
             this.panel3.Controls.Add(this.btnDeleteModel);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(3, 120);
+            this.panel3.Location = new System.Drawing.Point(3, 189);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(182, 32);
+            this.panel3.Size = new System.Drawing.Size(232, 32);
             this.panel3.TabIndex = 13;
             // 
             // btnImportModel
@@ -464,7 +470,7 @@
             this.btnDeleteModel.AutoSize = true;
             this.btnDeleteModel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnDeleteModel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnDeleteModel.Location = new System.Drawing.Point(102, 0);
+            this.btnDeleteModel.Location = new System.Drawing.Point(152, 0);
             this.btnDeleteModel.Margin = new System.Windows.Forms.Padding(2);
             this.btnDeleteModel.Name = "btnDeleteModel";
             this.btnDeleteModel.Size = new System.Drawing.Size(80, 32);
@@ -509,7 +515,7 @@
             this.editorControl1.DrawingMode = WinFormsGraphicsDevice.EditorControl.EditorDrawMode.Shaded;
             this.editorControl1.Location = new System.Drawing.Point(2, 2);
             this.editorControl1.Name = "editorControl1";
-            this.editorControl1.Size = new System.Drawing.Size(678, 633);
+            this.editorControl1.Size = new System.Drawing.Size(920, 716);
             this.editorControl1.TabIndex = 0;
             this.editorControl1.Text = "editorControl1";
             this.editorControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.editorControl1_MouseDown);
@@ -522,12 +528,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1082, 688);
+            this.ClientSize = new System.Drawing.Size(1424, 771);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.leftContainer);
             this.Controls.Add(this.rightContainer);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "3D Editor";

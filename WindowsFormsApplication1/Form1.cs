@@ -489,9 +489,9 @@ namespace WindowsFormsApplication1 {
                     SceneEntity targetActor;
                     SceneEntity draggedActor;
                     if (tree == hierarchyTreeView) {
-                        targetActor = STATIC_EDITOR_MODE.LevelInstance.Entities.First(entity => entity.Id == targetNode.Name);
-                        draggedActor = STATIC_EDITOR_MODE.LevelInstance.Entities.First(entity => entity.Id == draggedNode.Name);
-                        draggedActor.ParentId = targetNode.Name;
+                        targetActor = STATIC_EDITOR_MODE.LevelInstance.Entities.FirstOrDefault(entity => entity.Id == targetNode.Name);
+                        draggedActor = STATIC_EDITOR_MODE.LevelInstance.Entities.FirstOrDefault(entity => entity.Id == draggedNode.Name);
+                        draggedActor.ParentId = targetNode?.Name ?? "";
                     }
                 }
             }

@@ -218,7 +218,9 @@ namespace SharedGameData {
         public SceneEntity(Model model, string modelName) {
             EntityModel = model;
             ModelName = modelName;
-            Name = $"{modelName}:{new Random().Next(1000, 9999)}";
+            if (Name == "") {
+                Name = $"{modelName}:{new Random().Next(1000, 9999)}";
+            }
             // scale the object to something resonable
             model.Root.Transform = Matrix.Identity * Matrix.CreateScale(0.1f);
         }
